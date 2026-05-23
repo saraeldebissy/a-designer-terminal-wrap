@@ -34,7 +34,7 @@ export function ParameterStatsChart({ parameters }: ParameterStatsChartProps) {
                   </code>
                   <div className="flex-1">
                     <motion.div
-                      className="h-6 bg-gradient-to-r from-primary/80 to-secondary/60 rounded"
+                      className="h-6 rounded bg-[#1ed760]"
                       initial={{ width: 0 }}
                       whileInView={{ width: `${(flag.count / maxCount) * 100}%` }}
                       viewport={{ once: true }}

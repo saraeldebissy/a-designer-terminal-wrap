@@ -27,23 +27,20 @@ export function TopCommandsBarChart({
           viewport={{ once: true }}
           transition={{ delay: index * 0.05, duration: 0.4 }}
         >
-          {/* Bar container */}
-          <div className="relative h-10 bg-slate-800/30 rounded-lg overflow-hidden">
-            {/* Animated bar fill */}
+          <div className="relative h-12 overflow-hidden rounded-xl border border-white/10 bg-black/25">
             <motion.div
-              className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary/80 to-secondary/60 rounded-lg"
+              className="absolute inset-y-0 left-0 rounded-xl bg-[#1ed760]"
               initial={{ width: 0 }}
               whileInView={{ width: `${cmd.percentile * 100}%` }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.05 + 0.2, duration: 0.8, ease: 'easeOut' }}
             />
 
-            {/* Label and count */}
             <div className="absolute inset-0 flex items-center justify-between px-4">
-              <span className="font-mono text-sm font-medium text-slate-50 z-10">
+              <span className="z-10 truncate pr-2 font-mono text-base font-semibold text-white">
                 {cmd.name}
               </span>
-              <span className="text-sm text-slate-300 z-10">
+              <span className="z-10 text-base text-slate-100">
                 {cmd.count.toLocaleString()}
               </span>
             </div>

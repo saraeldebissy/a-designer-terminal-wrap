@@ -38,7 +38,7 @@ export function HourlyPatternBarChart({ data }: HourlyPatternBarChartProps) {
               <motion.div
                 className={`w-full rounded-t-sm ${
                   isPeak
-                    ? 'bg-gradient-to-t from-primary to-secondary'
+                    ? 'bg-[#1ed760]'
                     : 'bg-slate-600/50'
                 }`}
                 initial={{ height: 0 }}
@@ -53,7 +53,7 @@ export function HourlyPatternBarChart({ data }: HourlyPatternBarChartProps) {
       </div>
 
       {/* X-axis labels */}
-      <div className="flex justify-between text-xs text-slate-500">
+      <div className="flex justify-between text-sm text-slate-300">
         <span>12am</span>
         <span>6am</span>
         <span>12pm</span>
@@ -63,7 +63,7 @@ export function HourlyPatternBarChart({ data }: HourlyPatternBarChartProps) {
 
       {/* Peak indicator */}
       {peakHour && peakHour.count > 0 && (
-        <p className="text-sm text-slate-400 text-center">
+        <p className="text-base text-slate-200 text-center">
           Peak activity at{' '}
           <span className="text-primary font-medium">
             {formatHour(peakHour.hour)}

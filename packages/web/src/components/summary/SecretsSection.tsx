@@ -1,5 +1,5 @@
 /**
- * Secrets detection section - displays potentially exposed secrets with appropriate shame
+ * Secrets detection section — exposed credentials with editorial voice
  */
 
 import { motion } from 'motion/react';
@@ -10,29 +10,25 @@ export interface SecretsSectionProps {
   secrets: SecretsStats;
 }
 
-const SHAME_MESSAGES = [
-  "Your shell history is basically a password manager with zero security.",
-  "Congratulations, you've created a free API key buffet for anyone with access to your machine.",
-  "These secrets are about as secret as a billboard on the highway.",
-  "Your ~/.zsh_history file is doing more leaking than a rusty faucet.",
-  "Somewhere, a security auditor just felt a disturbance in the force.",
-  "Pro tip: 'history' is not short for 'secure credential storage'.",
-  "Your future self is going to be very disappointed about this.",
-  "This is why we can't have nice things. Or secure systems.",
+const EXPOSURE_NOTES = [
+  'These commands contain credentials. Rotate them.',
+  'Secrets in shell history can be read by anyone with access to this machine.',
+  'Your history file carries live credentials. Revoke before sharing this output.',
+  'Command history is plaintext on disk. These secrets are exposed.',
 ];
 
 const ROAST_BY_TYPE: Record<string, string> = {
-  'GitHub Token': "GitHub tokens! Now anyone can push to your repos. What could go wrong?",
-  'AWS Access Key': "AWS keys in plain text. Hope you like surprise cloud bills!",
-  'AWS Secret Key': "AWS secrets exposed. Time to check if someone's mining crypto on your account.",
-  'Database URL': "Database credentials! Your data wants to be free, apparently.",
-  'API Key': "API keys just chilling in your history. Very chill. Very insecure.",
-  'JWT Token': "JWTs in your history. It's like leaving your house key under the doormat, but worse.",
-  'Slack Token': "Slack tokens exposed. Now hackers can post memes in your #general too.",
-  'Environment Variable': "Sensitive env vars in history. .env files are crying.",
-  'curl Credentials': "curl with hardcoded creds. Classic mistake. Timeless, really.",
-  'Auth Header': "Auth headers in the clear. At least you're consistent about it.",
-  'Private Key': "A private key?! In your SHELL HISTORY?! We need to talk.",
+  'GitHub Token': 'GitHub tokens can grant repository write access. Revoke immediately.',
+  'AWS Access Key': 'AWS access keys should be rotated and moved to a secrets manager.',
+  'AWS Secret Key': 'AWS secret keys require immediate rotation.',
+  'Database URL': 'Database credentials should never appear in shell history.',
+  'API Key': 'API keys should be stored in protected config, not shell history.',
+  'JWT Token': 'JWT exposure enables session impersonation. Invalidate the token.',
+  'Slack Token': 'Revoke this and replace with scoped credentials.',
+  'Environment Variable': 'Sensitive env values should not appear in shell commands.',
+  'curl Credentials': 'Inline credentials in curl should use secure auth flows.',
+  'Auth Header': 'Authorization headers should not live in shell history.',
+  'Private Key': 'Private key material must be revoked and reissued.',
 };
 
 export function SecretsSection({ secrets }: SecretsSectionProps) {
@@ -40,115 +36,108 @@ export function SecretsSection({ secrets }: SecretsSectionProps) {
 
   if (totalSecretsFound === 0) {
     return (
-      <div className="text-center py-8">
+      <div className="rounded-3xl border border-[#1ed760]/30 bg-[#1ed760] p-8 text-center text-black">
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', bounce: 0.5 }}
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+          className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-black"
         >
-          <span className="text-6xl mb-4 block">🏆</span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M5 12l5 5L20 7" stroke="#1ed760" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </motion.div>
-        <h3 className="text-xl font-bold text-accent mb-2">Clean Record!</h3>
-        <p className="text-slate-400">
-          No exposed secrets detected. You're either very careful or very sneaky.
-          Either way, your InfoSec team would be proud.
+        <h3 className="mb-2 text-3xl font-extrabold">Clean Record</h3>
+        <p className="mx-auto max-w-2xl text-lg font-medium text-black/70">
+          No exposure detected. Keep it that way.
         </p>
       </div>
     );
   }
 
-  // Pick a random shame message
-  const shameMessage = SHAME_MESSAGES[Math.floor(Math.random() * SHAME_MESSAGES.length)];
-
-  // Get type-specific roast
+  const exposureNote = EXPOSURE_NOTES[Math.min(secretTypes.length - 1, EXPOSURE_NOTES.length - 1)];
   const primaryType = secretTypes[0]?.type;
-  const typeRoast = primaryType ? ROAST_BY_TYPE[primaryType] : null;
+  const typeNote = primaryType ? ROAST_BY_TYPE[primaryType] : null;
 
   return (
     <div className="space-y-6">
-      {/* Shame banner */}
       <motion.div
-        className="bg-red-500/10 border border-red-500/30 rounded-xl p-6 text-center"
+        className="rounded-3xl border border-black/30 bg-[#f172cd] p-7 text-black"
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
       >
-        <motion.span
-          className="text-5xl block mb-4"
-          animate={{
-            rotate: [0, -10, 10, -10, 0],
-          }}
-          transition={{
-            duration: 0.5,
-            delay: 0.5,
-            repeat: 2,
-          }}
-        >
-          🚨
-        </motion.span>
-        <h3 className="text-2xl font-bold text-red-400 mb-2">
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-black">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+              stroke="#f172cd"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <line x1="12" y1="9" x2="12" y2="13" stroke="#f172cd" strokeWidth="2" strokeLinecap="round" />
+            <line x1="12" y1="17" x2="12.01" y2="17" stroke="#f172cd" strokeWidth="2.5" strokeLinecap="round" />
+          </svg>
+        </div>
+        <h3 className="mb-2 text-4xl font-extrabold">
           {totalSecretsFound} Secret{totalSecretsFound !== 1 ? 's' : ''} Exposed
         </h3>
-        <p className="text-red-200/80 italic">
-          "{shameMessage}"
-        </p>
+        <p className="text-lg font-medium text-black/75">{exposureNote}</p>
       </motion.div>
 
-      {/* Type-specific roast */}
-      {typeRoast && (
+      {typeNote && (
         <motion.div
-          className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4"
+          className="rounded-2xl border border-black/35 bg-[#d8ef3f] p-5 text-black"
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
         >
-          <p className="text-orange-300 text-sm">
-            <span className="font-bold">Special mention:</span> {typeRoast}
+          <p className="text-base font-medium">
+            <span className="font-extrabold">Primary risk:</span> {typeNote}
           </p>
         </motion.div>
       )}
 
-      {/* Secret types breakdown with judgment */}
       {secretTypes.length > 0 && (
         <div>
-          <h3 className="text-sm uppercase tracking-wider text-slate-400 mb-3">
-            Your Hall of Shame
+          <h3 className="mb-3 text-[11px] uppercase tracking-[0.24em] text-white/50">
+            Exposure Types
           </h3>
           <div className="flex flex-wrap gap-2">
             {secretTypes.map(({ type, count }) => (
               <motion.span
                 key={type}
-                className="px-3 py-1.5 bg-red-900/30 border border-red-700/50 rounded-full text-sm"
+                className="rounded-full border border-white/20 bg-white/[0.07] px-3 py-1.5 text-sm"
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.04 }}
               >
-                <span className="text-red-400 font-medium">{type}</span>
-                <span className="text-red-300/60 ml-2">x{count}</span>
+                <span className="font-semibold text-white">{type}</span>
+                <span className="ml-2 font-mono text-white/50">×{count}</span>
               </motion.span>
             ))}
           </div>
         </div>
       )}
 
-      {/* Sample redacted commands */}
       {potentialSecrets.length > 0 && (
         <div>
-          <h3 className="text-sm uppercase tracking-wider text-slate-400 mb-3">
-            Evidence of Your Crimes (Redacted)
+          <h3 className="mb-3 text-[11px] uppercase tracking-[0.24em] text-white/50">
+            Redacted Evidence
           </h3>
           <StaggeredList className="space-y-2">
             {potentialSecrets.slice(0, 5).map((secret, index) => (
               <StaggeredItem key={index}>
-                <div className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-3 hover:border-red-500/30 transition-colors">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs px-2 py-0.5 bg-red-500/20 text-red-400 rounded font-medium">
+                <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3 transition-colors hover:border-[#f172cd]/50">
+                  <div className="mb-1.5 flex items-center gap-2">
+                    <span className="rounded bg-[#f172cd] px-2 py-0.5 text-xs font-bold text-black">
                       {secret.type}
                     </span>
-                    <span className="text-xs text-slate-600">exhibit #{index + 1}</span>
+                    <span className="font-mono text-xs text-white/35">#{index + 1}</span>
                   </div>
-                  <code className="text-xs text-slate-400 font-mono break-all">
+                  <code className="break-all font-mono text-xs text-white/70">
                     {secret.redactedCommand}
                   </code>
                 </div>
@@ -156,23 +145,22 @@ export function SecretsSection({ secrets }: SecretsSectionProps) {
             ))}
           </StaggeredList>
           {potentialSecrets.length > 5 && (
-            <p className="text-xs text-red-400/60 mt-3 text-center italic">
-              ...and {potentialSecrets.length - 5} more crimes against security
+            <p className="mt-3 text-center font-mono text-xs text-white/40">
+              +{potentialSecrets.length - 5} more
             </p>
           )}
         </div>
       )}
 
-      {/* Call to action with sass */}
       <motion.div
-        className="text-center pt-4 border-t border-slate-700/50"
+        className="border-t border-white/10 pt-4 text-center"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ delay: 0.5 }}
+        transition={{ delay: 0.4 }}
       >
-        <p className="text-sm text-slate-500">
-          Seriously though, you should probably rotate these. Like, now. We'll wait.
+        <p className="text-sm text-white/40">
+          Rotate exposed credentials and remove sensitive patterns from future commands.
         </p>
       </motion.div>
     </div>

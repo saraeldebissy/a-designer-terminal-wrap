@@ -12,17 +12,16 @@ export interface ActivityHeatmapProps {
 }
 
 const intensityClasses = [
-  'bg-slate-800/30',
-  'bg-primary/20',
-  'bg-primary/40',
-  'bg-primary/60',
-  'bg-primary/80',
+  'bg-slate-800/40',
+  'bg-emerald-900/70',
+  'bg-emerald-700/75',
+  'bg-primary/70',
+  'bg-primary/85',
   'bg-primary',
 ];
 
 export function ActivityHeatmap({ data, weeks = 26 }: ActivityHeatmapProps) {
   const { grid, maxCount, monthLabels } = useMemo(() => {
-    // Create a map for quick lookup
     const countMap = new Map<string, number>();
     let max = 0;
 
@@ -31,12 +30,9 @@ export function ActivityHeatmap({ data, weeks = 26 }: ActivityHeatmapProps) {
       max = Math.max(max, day.count);
     }
 
-    // Generate grid for the last N weeks
     const today = new Date();
     const startDate = new Date(today);
     startDate.setDate(startDate.getDate() - (weeks * 7));
-
-    // Align to start of week (Sunday)
     startDate.setDate(startDate.getDate() - startDate.getDay());
 
     const gridData: { date: string; count: number; dayOfWeek: number }[][] = [];
@@ -91,9 +87,8 @@ export function ActivityHeatmap({ data, weeks = 26 }: ActivityHeatmapProps) {
   };
 
   return (
-    <div className="space-y-2">
-      {/* Month labels */}
-      <div className="flex text-xs text-slate-500 ml-8">
+    <div className="space-y-3">
+      <div className="ml-8 flex text-xs text-slate-400">
         {monthLabels.map((month, i) => (
           <span
             key={i}
@@ -106,25 +101,23 @@ export function ActivityHeatmap({ data, weeks = 26 }: ActivityHeatmapProps) {
       </div>
 
       <div className="flex gap-2">
-        {/* Day labels */}
-        <div className="flex flex-col text-xs text-slate-500 gap-[3px] pt-[2px]">
-          <span className="h-[10px]"></span>
+        <div className="flex flex-col gap-[3px] pt-[2px] text-xs text-slate-400">
+          <span className="h-[10px]" />
           <span className="h-[10px]">Mon</span>
-          <span className="h-[10px]"></span>
+          <span className="h-[10px]" />
           <span className="h-[10px]">Wed</span>
-          <span className="h-[10px]"></span>
+          <span className="h-[10px]" />
           <span className="h-[10px]">Fri</span>
-          <span className="h-[10px]"></span>
+          <span className="h-[10px]" />
         </div>
 
-        {/* Grid */}
         <div className="flex gap-[3px] overflow-x-auto pb-2">
           {grid.map((week, weekIdx) => (
             <div key={weekIdx} className="flex flex-col gap-[3px]">
               {week.map((day, dayIdx) => (
                 <motion.div
                   key={`${weekIdx}-${dayIdx}`}
-                  className={`w-[10px] h-[10px] rounded-sm ${
+                  className={`h-[10px] w-[10px] rounded-sm ${
                     day.date ? getIntensityClass(day.count) : 'bg-transparent'
                   }`}
                   initial={{ opacity: 0, scale: 0.5 }}
@@ -142,11 +135,10 @@ export function ActivityHeatmap({ data, weeks = 26 }: ActivityHeatmapProps) {
         </div>
       </div>
 
-      {/* Legend */}
-      <div className="flex items-center justify-end gap-2 text-xs text-slate-500">
+      <div className="flex items-center justify-end gap-2 text-xs text-slate-400">
         <span>Less</span>
         {intensityClasses.map((cls, i) => (
-          <div key={i} className={`w-[10px] h-[10px] rounded-sm ${cls}`} />
+          <div key={i} className={`h-[10px] w-[10px] rounded-sm ${cls}`} />
         ))}
         <span>More</span>
       </div>

@@ -1,3 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&family=Syne:wght@600;700;800&display=swap');
+
+:root {
+  --lime: #d8ef3f;
+  --pink: #f172cd;
+  --green: #1ed760;
+  --cyan: #39d8ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  @apply bg-slate-950 text-slate-50;
+  margin: 0;
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  background: #050505;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Syne', sans-serif;
+}
+
+.story-card {
+  position: relative;
+  overflow: hidden;
+  min-height: auto;
+  border-radius: 2rem;
+}
+
+.story-noise {
+  background-image: none;
+  background-size: 14px 14px;
+  opacity: 0;
+}
+
+@media (max-width: 768px) {
+  .story-card {
+    min-height: auto;
+  }
 }

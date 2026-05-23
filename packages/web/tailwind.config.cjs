@@ -3,9 +3,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#a855f7',
-        secondary: '#14b8a6',
-        accent: '#22c55e'
+        primary: '#1ED760',
+        secondary: '#38BDF8',
+        accent: '#F59E0B',
+        ink: '#06140D',
+        panel: '#0D1F15'
+      },
+      boxShadow: {
+        glow: '0 0 0 1px rgba(255,255,255,0.03), 0 20px 60px rgba(6,20,13,0.45)',
       }
     }
   },

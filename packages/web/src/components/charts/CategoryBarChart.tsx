@@ -1,5 +1,5 @@
 /**
- * Category frequency bar chart
+ * Horizontal bar chart for command categories — ranked list matching TopCommandsBarChart visual language
  */
 
 import { motion } from 'motion/react';
@@ -11,56 +11,48 @@ export interface CategoryBarChartProps {
 }
 
 const categoryColors: Record<string, string> = {
-  vcs: 'from-orange-500 to-orange-600',
-  pkg: 'from-blue-500 to-blue-600',
-  runtime: 'from-green-500 to-green-600',
-  devops: 'from-purple-500 to-purple-600',
-  remote: 'from-cyan-500 to-cyan-600',
-  editor: 'from-pink-500 to-pink-600',
-  files: 'from-yellow-500 to-yellow-600',
-  shell: 'from-slate-500 to-slate-600',
+  vcs: 'bg-[#1ed760]',
+  pkg: 'bg-[#38bdf8]',
+  runtime: 'bg-[#a3e635]',
+  devops: 'bg-[#f59e0b]',
+  remote: 'bg-[#22d3ee]',
+  editor: 'bg-[#fb7185]',
+  files: 'bg-[#fb923c]',
+  shell: 'bg-[#94a3b8]',
 };
 
-export function CategoryBarChart({
-  categories,
-  maxItems = 8,
-}: CategoryBarChartProps) {
+export function CategoryBarChart({ categories, maxItems = 8 }: CategoryBarChartProps) {
   const displayCategories = categories.slice(0, maxItems);
   const maxCount = Math.max(...displayCategories.map((c) => c.count), 1);
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="space-y-3">
       {displayCategories.map((category, index) => {
-        const heightPercent = (category.count / maxCount) * 100;
-        const colorClass = categoryColors[category.slug] || 'from-slate-500 to-slate-600';
+        const widthPercent = (category.count / maxCount) * 100;
+        const colorClass = categoryColors[category.slug] || 'bg-[#64748b]';
 
         return (
           <motion.div
             key={category.slug}
-            className="flex flex-col items-center"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            className="relative"
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: index * 0.1 }}
+            transition={{ delay: index * 0.05, duration: 0.4 }}
           >
-            {/* Bar container */}
-            <div className="w-full h-32 flex items-end justify-center">
+            <div className="relative h-11 overflow-hidden rounded-xl border border-white/10 bg-black/25">
               <motion.div
-                className={`w-12 rounded-t-lg bg-gradient-to-t ${colorClass}`}
-                initial={{ height: 0 }}
-                whileInView={{ height: `${Math.max(heightPercent, 10)}%` }}
+                className={`absolute inset-y-0 left-0 rounded-xl ${colorClass}`}
+                initial={{ width: 0 }}
+                whileInView={{ width: `${widthPercent}%` }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1 + 0.2, duration: 0.6, ease: 'easeOut' }}
+                transition={{ delay: index * 0.05 + 0.2, duration: 0.8, ease: 'easeOut' }}
               />
+              <div className="absolute inset-0 flex items-center justify-between px-4">
+                <span className="z-10 text-sm font-semibold text-white">{category.name}</span>
+                <span className="z-10 font-mono text-sm text-slate-300">{category.count.toLocaleString()}</span>
+              </div>
             </div>
-
-            {/* Label */}
-            <p className="mt-2 text-sm font-medium text-slate-200 text-center">
-              {category.name}
-            </p>
-            <p className="text-xs text-slate-500">
-              {category.count.toLocaleString()}
-            </p>
           </motion.div>
         );
       })}

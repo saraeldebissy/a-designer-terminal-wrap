@@ -1,5 +1,5 @@
 /**
- * Single metric display card with glass effect
+ * Single metric display card with elevated visual treatment
  */
 
 import { motion } from 'motion/react';
@@ -15,9 +15,9 @@ export interface MetricCardProps {
 }
 
 const accentClasses = {
-  primary: 'text-primary drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]',
-  secondary: 'text-secondary drop-shadow-[0_0_10px_rgba(20,184,166,0.5)]',
-  accent: 'text-accent drop-shadow-[0_0_10px_rgba(34,197,94,0.5)]',
+  primary: 'bg-primary text-white',
+  secondary: 'bg-secondary text-white',
+  accent: 'bg-accent text-black',
 };
 
 export function MetricCard({
@@ -32,23 +32,21 @@ export function MetricCard({
 
   return (
     <motion.div
-      className={`
-        bg-slate-800/30 backdrop-blur-md border border-slate-700/50
-        rounded-xl p-6
-        ${className}
-      `}
-      whileHover={{ scale: 1.02 }}
-      transition={{ type: 'spring', stiffness: 300 }}
+      className={[
+        'group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl',
+        className,
+      ].join(' ')}
+      whileHover={{ y: -5, scale: 1.01 }}
+      transition={{ type: 'spring', stiffness: 260, damping: 22 }}
     >
-      <div className="flex items-start justify-between">
+      <div className={`absolute inset-x-0 top-0 h-1 ${accentClasses[accentColor]}`} />
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm uppercase tracking-wider text-slate-400">{label}</p>
-          <p className={`text-4xl font-bold mt-2 ${accentClasses[accentColor]}`}>
-            {formattedValue}
-          </p>
-          {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
+          <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">{label}</p>
+          <p className="mt-3 text-3xl font-bold leading-tight text-white md:text-4xl">{formattedValue}</p>
+          {subtitle && <p className="mt-2 text-sm text-slate-300">{subtitle}</p>}
         </div>
-        {icon && <div className="text-slate-500">{icon}</div>}
+        {icon && <div className="text-slate-400">{icon}</div>}
       </div>
     </motion.div>
   );
